@@ -1,0 +1,48 @@
+<h1>Weather Forecast</h1>
+
+<form id="weather-form" action="/forecast" method="get" accept-charset="UTF-8">
+  <label for="q">Enter ZIP / Place</label><br>
+  <input type="text" name="q" id="q" value="<%= h params[:q] %>" size="40" autocomplete="off" />
+  <button type="submit" id="get-weather-btn">Get Weather</button>
+  <span id="loader" style="display:none; margin-left:10px;">Loading…</span>
+</form>
+
+<hr>
+
+<% if @error.present? %>
+  <p style="color: red;"><strong>Error:</strong> <%= @error %></p>
+<% end %>
+
+<% if @result.present? %>
+  <div id="weather-result" style="margin-top: 12px;">
+    <h3>Forecast for <%= @result[:location] %></h3>
+    <p><strong>Temperature:</strong> <%= @result[:temperature_c] %> °C (<%= @result[:temperature_f] %> °F)</p>
+    <p><strong>High Temperature:</strong> <%= @result[:high_c] %> °C</p>
+    <p><strong>Low Temperature:</strong> <%= @result[:low_c] %> °C</p>
+    <% if @result[:postcode].present? %>
+      <p><strong>Postal Code:</strong> <%= @result[:postcode] %> </p>
+    <% end %>
+    <p><strong>State:</strong> <%= @result[:state] %> </p>
+    <p><strong>Country:</strong> <%= @result[:country] %> </p>
+  </div>
+<% end %>
+
+<!-- Small client-side script to show loader and log click -->
+<script>
+  (function() {
+    var form = document.getElementById('weather-form');
+    var btn  = document.getElementById('get-weather-btn');
+    var loader = document.getElementById('loader');
+
+    form.addEventListener('submit', function() {
+      loader.style.display = 'inline';
+      btn.disabled = true;
+      console.log('Submitting form, q=', document.getElementById('q').value);
+    });
+
+    window.addEventListener('pageshow', function() {
+      btn.disabled = false;
+      loader.style.display = 'none';
+    });
+  })();
+</script>
